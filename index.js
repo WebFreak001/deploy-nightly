@@ -56,6 +56,8 @@ async function run() {
 
 		assets.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
+		var toDelete = [];
+
 		let numFound = 0;
 		for (let i = 0; i < assets.data.length; i++) {
 			const asset = assets.data[i];
