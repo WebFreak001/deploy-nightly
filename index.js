@@ -29,7 +29,7 @@ async function uploadAsset(github, name) {
 		file: fs.readFileSync(assetPath)
 	});
 
-	return uploadAssetResponse.data.value.browser_download_url;
+	return uploadAssetResponse.data.browser_download_url;
 }
 
 async function run() {
