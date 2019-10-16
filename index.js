@@ -77,7 +77,7 @@ async function run() {
 		}
 
 		let now = new Date();
-		let date = now.getUTCFullYear().toString() + pad2(now.getUTCMonth().toString()) + pad2(now.getUTCDate().toString());
+		let date = now.getUTCFullYear().toString() + pad2((now.getUTCMonth() + 1).toString()) + pad2(now.getUTCDate().toString());
 
 		name = name.replace("$$", date + "-" + hash);
 
