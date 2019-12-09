@@ -56,12 +56,16 @@ async function run() {
 
 		assets.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
-		var toDelete = [];
+		let toDelete = [];
+		let existingAssetNameId = undefined;
 
 		let numFound = 0;
 		for (let i = 0; i < assets.data.length; i++) {
 			const asset = assets.data[i];
-			if (asset.name.startsWith(nameStart) && asset.name.endsWith(nameEnd)) {
+			if (asset.name == name) {
+				// not commit hash or date in filename, always force upload here
+				existingAssetNameId = asset.id;
+			} else if (asset.name.startsWith(nameStart) && asset.name.endsWith(nameEnd)) {
 				if (asset.name.endsWith("-" + hash + nameEnd)) {
 					core.info("Current commit already released, exiting");
 					core.setOutput("uploaded", "no");
@@ -81,6 +85,16 @@ async function run() {
 
 		name = name.replace("$$", date + "-" + hash);
 
+		if (existingAssetNameId !== undefined) {
+			core.info("Deleting old asset of same name first");
+			await github.repos.deleteReleaseAsset({
+				owner: owner,
+				repo: repo,
+				asset_id: existingAssetNameId
+			});
+		}
+
+		core.info("Uploading asset as file " + name);
 		let url = await uploadAsset(github, name);
 
 		core.info("Deleting " + toDelete.length + " old assets");
