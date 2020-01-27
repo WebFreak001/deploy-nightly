@@ -51,7 +51,8 @@ async function run() {
 		let assets = await github.repos.listAssetsForRelease({
 			owner: owner,
 			repo: repo,
-			release_id: parseInt(releaseId)
+			release_id: parseInt(releaseId),
+			per_page: 100
 		});
 
 		assets.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
