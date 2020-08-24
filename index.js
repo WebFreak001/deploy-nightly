@@ -55,7 +55,7 @@ async function run() {
 			per_page: 100
 		});
 
-		assets.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+		assets.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
 		let toDelete = [];
 		let existingAssetNameId = undefined;
