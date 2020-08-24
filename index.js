@@ -1,6 +1,6 @@
 /**
  * This file is licensed under the MIT License.
- * 
+ *
  * Some code taken from https://github.com/actions/upload-release-asset
  */
 
@@ -9,9 +9,9 @@ const { GitHub } = require("@actions/github");
 const fs = require("fs");
 
 /**
- * 
- * @param {GitHub} github 
- * @param {*} name 
+ *
+ * @param {GitHub} github
+ * @param {*} name
  */
 async function uploadAsset(github, name) {
 	const url = core.getInput("upload_url", { required: true });
@@ -55,7 +55,9 @@ async function run() {
 			per_page: 100
 		});
 
-		assets.data.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+		// we should be able to sort quite safely on iso-8601 strings
+		// we need to sort descending to delete oldest assets
+		assets.data.sort((a, b) => b.created_at.localeCompare(a.created_at));
 
 		let toDelete = [];
 		let existingAssetNameId = undefined;
@@ -63,15 +65,18 @@ async function run() {
 		let numFound = 0;
 		for (let i = 0; i < assets.data.length; i++) {
 			const asset = assets.data[i];
+			//core.info(numFound + ":" + asset.name);
 			if (asset.name == name) {
 				// not commit hash or date in filename, always force upload here
 				existingAssetNameId = asset.id;
-			} else if (asset.name.startsWith(nameStart) && asset.name.endsWith(nameEnd)) {
+			}
+			else if (asset.name.startsWith(nameStart) && asset.name.endsWith(nameEnd)) {
 				if (asset.name.endsWith("-" + hash + nameEnd)) {
 					core.info("Current commit already released, exiting");
 					core.setOutput("uploaded", "no");
 					return;
-				} else {
+				}
+				else {
 					numFound++;
 					if (numFound >= maxReleases) {
 						core.info("Queuing old asset " + asset.name + " for deletion");
@@ -110,7 +115,8 @@ async function run() {
 
 		core.setOutput("uploaded", "yes");
 		core.setOutput("url", url);
-	} catch (error) {
+	}
+	catch (error) {
 		core.setFailed(error.message);
 	}
 }
