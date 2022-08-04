@@ -110,6 +110,7 @@ async function run() {
 
 		core.setOutput("uploaded", "yes");
 		core.setOutput("url", url);
+		core.setOutput("asset_name", name);
 	} catch (error) {
 		core.setFailed(error.message);
 	}
