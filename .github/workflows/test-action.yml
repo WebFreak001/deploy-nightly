@@ -6,6 +6,7 @@ jobs:
     name: "Test deploy-nightly functionality"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
       - name: Deploy README to v1.0.0 to test functionality
         uses: ./
         env:
