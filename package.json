@@ -4,10 +4,13 @@
 	"description": "Deploy an asset to a GitHub release with date and commit hash and delete old assets.",
 	"main": "index.js",
 	"dependencies": {
-		"@actions/core": "^1.2.6",
-		"@actions/exec": "^1.0.1",
-		"@actions/github": "^1.1.0"
+		"@actions/core": "^1.10.0",
+		"@actions/exec": "^1.1.1",
+		"@actions/github": "^5.1.1"
 	},
 	"author": "WebFreak001",
-	"license": "MIT"
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^18.11.9"
+	}
 }

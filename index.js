@@ -4,16 +4,17 @@
  * Some code taken from https://github.com/actions/upload-release-asset
  */
 
-const core = require("@actions/core");
-const { GitHub } = require("@actions/github");
-const fs = require("fs");
+import core from "@actions/core";
+import { getOctokit } from '@actions/github';
+// import type { GitHub } from '@actions/github/lib/utils';
+import fs from "fs";
 
 /**
  * 
- * @param {GitHub} github 
+ * @param {InstanceType<typeof GitHub>} octokit 
  * @param {*} name 
  */
-async function uploadAsset(github, name) {
+async function uploadAsset(octokit, name) {
 	const url = core.getInput("upload_url", { required: true });
 	const assetPath = core.getInput("asset_path", { required: true });
 	const contentType = core.getInput("asset_content_type", { required: true });
@@ -22,7 +23,7 @@ async function uploadAsset(github, name) {
 
 	const headers = { 'content-type': contentType, 'content-length': contentLength(assetPath) };
 
-	const uploadAssetResponse = await github.repos.uploadReleaseAsset({
+	const uploadAssetResponse = await octokit.rest.repos.uploadReleaseAsset({
 		url,
 		headers,
 		name,
@@ -38,26 +39,37 @@ async function run() {
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
 		const placeholderStart = name.indexOf("$$");
-		const nameStart = name.substr(0, placeholderStart);
-		const nameEnd = name.substr(placeholderStart + 2);
+		const nameStart = name.substring(0, placeholderStart);
+		const nameEnd = name.substring(placeholderStart + 2);
 
-		const github = new GitHub(process.env.GITHUB_TOKEN);
-		const hash = process.env.GITHUB_SHA.substr(0, 6);
+		if (!process.env.GITHUB_TOKEN
+			|| !process.env.GITHUB_SHA
+			|| !process.env.GITHUB_REPOSITORY)
+			throw new Error("Missing required GitHub environment variables!");
+
+		const octokit = getOctokit(process.env.GITHUB_TOKEN);
+		const hash = process.env.GITHUB_SHA.substring(0, 6);
 		const repository = process.env.GITHUB_REPOSITORY.split('/');
 		const owner = repository[0];
 		const repo = repository[1];
 
 		core.info("Checking previous assets");
-		let assets = await github.repos.listAssetsForRelease({
+		let assets = await octokit.rest.repos.listReleaseAssets({
 			owner: owner,
 			repo: repo,
 			release_id: parseInt(releaseId),
 			per_page: 100
 		});
 
-		assets.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+		assets.data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
+		/**
+		 * @type {number[]}
+		 */
 		let toDelete = [];
+		/**
+		 * @type {number | undefined}
+		 */
 		let existingAssetNameId = undefined;
 
 		let numFound = 0;
@@ -88,7 +100,7 @@ async function run() {
 
 		if (existingAssetNameId !== undefined) {
 			core.info("Deleting old asset of same name first");
-			await github.repos.deleteReleaseAsset({
+			await octokit.rest.repos.deleteReleaseAsset({
 				owner: owner,
 				repo: repo,
 				asset_id: existingAssetNameId
@@ -96,12 +108,12 @@ async function run() {
 		}
 
 		core.info("Uploading asset as file " + name);
-		let url = await uploadAsset(github, name);
+		let url = await uploadAsset(octokit, name);
 
 		core.info("Deleting " + toDelete.length + " old assets");
 		for (let i = 0; i < toDelete.length; i++) {
 			const id = toDelete[i];
-			await github.repos.deleteReleaseAsset({
+			await octokit.rest.repos.deleteReleaseAsset({
 				owner: owner,
 				repo: repo,
 				asset_id: id
