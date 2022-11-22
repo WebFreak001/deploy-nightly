@@ -10,6 +10,7 @@
 	},
 	"author": "WebFreak001",
 	"license": "MIT",
+	"type": "module",
 	"devDependencies": {
 		"@types/node": "^18.11.9"
 	}
