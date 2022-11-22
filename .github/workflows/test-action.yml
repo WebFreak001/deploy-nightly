@@ -1,13 +1,11 @@
-name: Deploy Nightly
+name: "Test deploy-nightly functionality"
 on: [push]
 
 jobs:
   nightly:
-    name: Test deploy-nightly functionality
+    name: "Test deploy-nightly functionality"
     runs-on: ubuntu-latest
     steps:
-      ... # build your asset first
-
       - name: Deploy README to v1.0.0 to test functionality
         uses: ./
         env:
