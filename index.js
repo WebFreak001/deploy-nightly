@@ -27,7 +27,7 @@ async function uploadAsset(octokit, name) {
 		url,
 		headers,
 		name,
-		file: fs.readFileSync(assetPath)
+		data: fs.readFileSync(assetPath)
 	});
 
 	return uploadAssetResponse.data.browser_download_url;
