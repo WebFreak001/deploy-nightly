@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy Windows release
         if: matrix.os == 'windows-latest'
-        uses: WebFreak001/deploy-nightly@v1.1.0
+        uses: WebFreak001/deploy-nightly@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided by github actions
         with:
