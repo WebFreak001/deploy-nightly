@@ -35,9 +35,9 @@ async function uploadAsset(octokit, name) {
 
 async function run() {
 	try {
-		const token = core.getInput("token", { required: true });
-		const sha = core.getInput("sha", { required: true });
-		let repo = core.getInput("repo", { required: true });
+		const token = core.getInput("token", { required: false });
+		const sha = core.getInput("sha", { required: false });
+		let repo = core.getInput("repo", { required: false });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
