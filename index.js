@@ -42,6 +42,10 @@ async function run() {
 		const nameStart = name.substring(0, placeholderStart);
 		const nameEnd = name.substring(placeholderStart + 2);
 
+		core.info("GITHUB_TOKEN: " + process.env.GITHUB_TOKEN);
+		core.info("GITHUB_SHA: " + process.env.GITHUB_SHA);
+		core.info("GITHUB_REPOSITORY: " + process.env.GITHUB_REPOSITORY);
+		
 		if (!process.env.GITHUB_TOKEN
 			|| !process.env.GITHUB_SHA
 			|| !process.env.GITHUB_REPOSITORY)
@@ -53,6 +57,10 @@ async function run() {
 		const owner = repository[0];
 		const repo = repository[1];
 
+		core.info("hash: " + hash);
+		core.info("owner: " + owner);
+		core.info("repo: " + repo);
+
 		core.info("Checking previous assets");
 		let assets = await octokit.rest.repos.listReleaseAssets({
 			owner: owner,
@@ -60,6 +68,7 @@ async function run() {
 			release_id: parseInt(releaseId),
 			per_page: 100
 		});
+		core.info("Checked previous assets");
 
 		assets.data.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
