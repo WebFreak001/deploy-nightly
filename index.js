@@ -35,6 +35,9 @@ async function uploadAsset(octokit, name) {
 
 async function run() {
 	try {
+		const token = core.getInput("token", { required: true });
+		const sha = core.getInput("sha", { required: true });
+		const repo = core.getInput("repo", { required: true });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
@@ -42,18 +45,13 @@ async function run() {
 		const nameStart = name.substring(0, placeholderStart);
 		const nameEnd = name.substring(placeholderStart + 2);
 
-		core.info("GITHUB_TOKEN: " + process.env.GITHUB_TOKEN);
-		core.info("GITHUB_SHA: " + process.env.GITHUB_SHA);
-		core.info("GITHUB_REPOSITORY: " + process.env.GITHUB_REPOSITORY);
+		core.info("GITHUB_TOKEN: " + token);
+		core.info("GITHUB_SHA: " + sha);
+		core.info("GITHUB_REPOSITORY: " + repo);
 		
-		if (!process.env.GITHUB_TOKEN
-			|| !process.env.GITHUB_SHA
-			|| !process.env.GITHUB_REPOSITORY)
-			throw new Error("Missing required GitHub environment variables!");
-
-		const octokit = getOctokit(process.env.GITHUB_TOKEN);
-		const hash = process.env.GITHUB_SHA.substring(0, 6);
-		const repository = process.env.GITHUB_REPOSITORY.split('/');
+		const octokit = getOctokit(token);
+		const hash = sha.substring(0, 6);
+		const repository = repo.split('/');
 		const owner = repository[0];
 		const repo = repository[1];
 
