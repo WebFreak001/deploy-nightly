@@ -31,7 +31,7 @@ inputs:
     required: false
     default: ${{ github.token }}
   repo:
-    description: "Optionally specify the repo where the release should be generated. Defaults to current repo"
+    description: "Optionally specify the repo where the release is located. Defaults to current repo"
     required: false
     default: ${{ github.repository }}
   sha:
