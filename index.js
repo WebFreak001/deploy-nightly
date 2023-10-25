@@ -37,7 +37,7 @@ async function run() {
 	try {
 		const token = core.getInput("token", { required: true });
 		const sha = core.getInput("sha", { required: true });
-		const repo = core.getInput("repo", { required: true });
+		let repo = core.getInput("repo", { required: true });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
