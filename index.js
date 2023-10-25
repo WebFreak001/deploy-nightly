@@ -53,7 +53,7 @@ async function run() {
 		const hash = sha.substring(0, 6);
 		const repository = repo.split('/');
 		const owner = repository[0];
-		const repo = repository[1];
+		repo = repository[1];
 
 		core.info("hash: " + hash);
 		core.info("owner: " + owner);
