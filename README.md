@@ -35,3 +35,13 @@ jobs:
           asset_content_type: application/zip # required by GitHub API
           max_releases: 7 # optional, if there are more releases than this matching the asset_name, the oldest ones are going to be deleted
 ```
+
+### Advanced Use
+
+if you want to publish a release to another repository, or just from outside a release-event, manually provide the environment variables
+
+```yml
+        env:
+          GITHUB_SHA: 547fdf5 # used for checking for existing files / the filename (only the first 6 characters are used)
+          GITHUB_REPOSITORY: Pure-D/serve-d # this is where the API calls go to list asset files, must match the upload_url
+```
