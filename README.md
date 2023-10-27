@@ -34,4 +34,7 @@ jobs:
           asset_name: myapp_windows-nightly-$$.zip # name to upload the release as, use $$ to insert date (YYYYMMDD) and 6 letter commit hash
           asset_content_type: application/zip # required by GitHub API
           max_releases: 7 # optional, if there are more releases than this matching the asset_name, the oldest ones are going to be deleted
+          token: *** # optional, a github token. defaults to GITHUB_TOKEN
+          sha: 547fdf5 # optional, a commit SHA. Defaults to GITHUB_SHA
+          repo: Pure-D/serve-d # optional, the repository where the release is located
 ```
