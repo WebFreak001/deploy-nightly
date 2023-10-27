@@ -35,21 +35,23 @@ async function uploadAsset(octokit, name) {
 
 async function run() {
 	try {
-		const token = core.getInput("token", { required: false });
-		const sha = core.getInput("sha", { required: false });
-		let repo = core.getInput("repo", { required: false });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
 		const placeholderStart = name.indexOf("$$");
 		const nameStart = name.substring(0, placeholderStart);
 		const nameEnd = name.substring(placeholderStart + 2);
-		
-		const octokit = getOctokit(token);
-		const hash = sha.substring(0, 6);
-		const repository = repo.split('/');
+
+		if (!process.env.GITHUB_TOKEN
+			|| !process.env.GITHUB_SHA
+			|| !process.env.GITHUB_REPOSITORY)
+			throw new Error("Missing required GitHub environment variables!");
+
+		const octokit = getOctokit(process.env.GITHUB_TOKEN);
+		const hash = process.env.GITHUB_SHA.substring(0, 6);
+		const repository = process.env.GITHUB_REPOSITORY.split('/');
 		const owner = repository[0];
-		repo = repository[1];
+		const repo = repository[1];
 
 		core.info("Checking previous assets");
 		let assets = await octokit.rest.repos.listReleaseAssets({
