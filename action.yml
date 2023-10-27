@@ -26,6 +26,18 @@ inputs:
     description: 'Maximum number of historical releases with the given asset_name to keep'
     required: false
     default: 7
+  token:
+    description: 'The Github token.'
+    required: false
+    default: ${{ github.token }}
+  repo:
+    description: 'Optionally specify the repository ("OwnerName/RepoName") where the release is located. Defaults to current repository'
+    required: false
+    default: ${{ github.repository }}
+  sha:
+    description: 'Optionally specify the commit SHA for release filename. Defaults to SHA that triggered the workflow. Only the first 6 characters are used'
+    required: false
+    default: ${{ github.sha }}
 
 output:
   uploaded:
