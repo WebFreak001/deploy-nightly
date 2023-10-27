@@ -35,6 +35,14 @@ async function uploadAsset(octokit, name) {
 
 async function run() {
 	try {
+		// was the previous way before this was an action 'with' input
+		const token_env = process.env.GITHUB_TOKEN || "";
+		if (token_env != "")
+			core.warning("This action no longer uses the GITHUB_TOKEN environment variable. You can simply remove the environment variable if it's `${secrets.GITHUB_TOKEN}` or migrate to setting `with: token: ...` instead. Setting this environment variable will be ignored in the future.");
+
+		const token = token_env != "" ? token_env : core.getInput("token", { required: false });
+		const sha = core.getInput("sha", { required: false });
+		let repo = core.getInput("repo", { required: false });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
@@ -42,16 +50,11 @@ async function run() {
 		const nameStart = name.substring(0, placeholderStart);
 		const nameEnd = name.substring(placeholderStart + 2);
 
-		if (!process.env.GITHUB_TOKEN
-			|| !process.env.GITHUB_SHA
-			|| !process.env.GITHUB_REPOSITORY)
-			throw new Error("Missing required GitHub environment variables!");
-
-		const octokit = getOctokit(process.env.GITHUB_TOKEN);
-		const hash = process.env.GITHUB_SHA.substring(0, 6);
-		const repository = process.env.GITHUB_REPOSITORY.split('/');
+		const octokit = getOctokit(token);
+		const hash = sha.substring(0, 6);
+		const repository = repo.split('/');
 		const owner = repository[0];
-		const repo = repository[1];
+		repo = repository[1];
 
 		core.info("Checking previous assets");
 		let assets = await octokit.rest.repos.listReleaseAssets({
