@@ -42,7 +42,7 @@ async function run() {
 
 		const token = token_env != "" ? token_env : core.getInput("token", { required: false });
 		const sha = core.getInput("sha", { required: false });
-		let repo = core.getInput("repo", { required: false });
+		const owner_repo = core.getInput("repo", { required: false });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
@@ -52,9 +52,7 @@ async function run() {
 
 		const octokit = getOctokit(token);
 		const hash = sha.substring(0, 6);
-		const repository = repo.split('/');
-		const owner = repository[0];
-		repo = repository[1];
+		const [owner, repo] = owner_repo.split('/');
 
 		core.info("Checking previous assets");
 		let assets = await octokit.rest.repos.listReleaseAssets({
