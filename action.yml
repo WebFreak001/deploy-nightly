@@ -39,12 +39,12 @@ inputs:
     required: false
     default: ${{ github.sha }}
 
-output:
+outputs:
   uploaded:
     description: 'yes if a new upload has been made, no if the upload already existed'
   url:
     description: 'GitHub asset URL'
 
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'index.js'
