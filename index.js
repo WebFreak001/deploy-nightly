@@ -44,6 +44,7 @@ async function run() {
 		const sha = core.getInput("sha", { required: false });
 		const owner_repo = core.getInput("repo", { required: false });
 		const maxReleases = parseInt(core.getInput("max_releases", { required: false }));
+		const ignoreHash = core.getBooleanInput("ignore_hash", { required: false });
 		const releaseId = core.getInput("release_id", { required: true });
 		let name = core.getInput("asset_name", { required: true });
 		const placeholderStart = name.indexOf("$$");
@@ -80,7 +81,7 @@ async function run() {
 				// not commit hash or date in filename, always force upload here
 				existingAssetNameId = asset.id;
 			} else if (asset.name.startsWith(nameStart) && asset.name.endsWith(nameEnd)) {
-				if (asset.name.endsWith("-" + hash + nameEnd)) {
+				if (!ignoreHash && asset.name.endsWith("-" + hash + nameEnd)) {
 					core.info("Current commit already released, exiting");
 					core.setOutput("uploaded", "no");
 					return;

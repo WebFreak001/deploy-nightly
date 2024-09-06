@@ -26,6 +26,10 @@ inputs:
     description: 'Maximum number of historical releases with the given asset_name to keep'
     required: false
     default: 7
+  ignore_hash:
+    description: 'If a release asset exists associated with the current commit, upload anyway?'
+    required: false
+    default: false
   token:
     description: 'The Github token.'
     required: false
